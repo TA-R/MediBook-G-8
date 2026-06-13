@@ -71,7 +71,7 @@
        th:text="${erreur}"
        class="error"></p>
 
-    <form th:action="@{/p/login}" method="post">
+    <form th:action="@{/authPatient/login}" method="post">
 
         <input type="text"
                name="telephone"
@@ -88,7 +88,7 @@
 
     <div class="register-link">
         <p>Pas encore inscrit ?
-            <a th:href="@{/p/register}">S'inscrire</a>
+            <a th:href="@{/authPatient/register}">S'inscrire</a>
         </p>
     </div>
 </div>
