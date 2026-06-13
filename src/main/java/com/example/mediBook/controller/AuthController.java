@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/authPatient")
-public class PatientController {
+public class AuthController {
 
     @Autowired
     private PatientService patientService;
@@ -59,7 +59,7 @@ public class PatientController {
                         Model model) {
         var user = userService.connecterParTelephone(telephone, password);
         if (user.isPresent()) {
-            return "redirect:/dashboardPatient";
+            return "redirect:/dashboardPatient/";
         } else {
             model.addAttribute("erreur", "Téléphone ou mot de passe incorrect !");
             return "patient/login";
