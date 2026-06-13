@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/p")
+@RequestMapping("/authPatient")
 public class PatientController {
 
     @Autowired
@@ -26,7 +26,6 @@ public class PatientController {
     public String showRegister() {
         return "patient/register";
     }
-
     @PostMapping("/register")
     public String register(@RequestParam String nom,
                            @RequestParam String prenom,
@@ -34,7 +33,7 @@ public class PatientController {
                            @RequestParam String password,
                            Model model) {
         if (userService.telephoneExiste(telephone)) {
-            model.addAttribute("erreur", "Téléphone déjà utilisé !");
+            model.addAttribute("erreur", "Ce téléphone est déjà utilisé ! Veuillez vous connecter.");
             return "patient/register";
         }
         User user = new User();
@@ -47,29 +46,24 @@ public class PatientController {
         patient.setPrenom(prenom);
 
         patientService.inscrirePatient(patient, user);
-        return "redirect:/p/login";
+        return "redirect:/authPatient/login";
     }
 
     @GetMapping("/login")
     public String showLogin() {
         return "patient/login";
     }
-
     @PostMapping("/login")
     public String login(@RequestParam String telephone,
                         @RequestParam String password,
                         Model model) {
         var user = userService.connecterParTelephone(telephone, password);
         if (user.isPresent()) {
-            return "redirect:/p/dashboard";
+            return "redirect:/dashboardPatient";
         } else {
             model.addAttribute("erreur", "Téléphone ou mot de passe incorrect !");
             return "patient/login";
         }
     }
 
-    @GetMapping("/dashboard")
-    public String dashboard(Model model) {
-        return "patient/dashboard";
-    }
 }
