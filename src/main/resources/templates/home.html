@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediBook - Clinique medicale</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --ink: #172033;
+            --muted: #64748b;
+            --line: #dbe4f0;
+            --surface: #ffffff;
+            --soft: #f4f7fb;
+            --accent: #0f766e;
+            --warm: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: var(--ink);
+            background: var(--soft);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 16px clamp(20px, 5vw, 72px);
+            background: rgba(255, 255, 255, 0.94);
+            border-bottom: 1px solid var(--line);
+            backdrop-filter: blur(10px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .brand-mark {
+            display: grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            color: white;
+            background: var(--primary);
+            font-weight: 900;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 0 18px;
+            border-radius: 8px;
+            border: 1px solid var(--primary);
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .btn-primary {
+            color: white;
+            background: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            color: var(--primary);
+            background: white;
+        }
+
+        .btn-secondary:hover {
+            background: #eff6ff;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+            align-items: center;
+            gap: clamp(28px, 5vw, 64px);
+            padding: clamp(44px, 7vw, 82px) clamp(20px, 5vw, 72px) 36px;
+            background:
+                    linear-gradient(90deg, rgba(244, 247, 251, 0.98) 0%, rgba(244, 247, 251, 0.82) 50%, rgba(244, 247, 251, 0.74) 100%),
+                    url("https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1600&q=80") center/cover;
+        }
+
+        .hero h1 {
+            max-width: 760px;
+            margin: 0;
+            font-size: clamp(36px, 5vw, 64px);
+            line-height: 1.05;
+            letter-spacing: 0;
+        }
+
+        .hero p {
+            max-width: 620px;
+            margin: 22px 0 0;
+            color: var(--muted);
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .clinic-panel {
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 18px 45px rgba(23, 32, 51, 0.14);
+        }
+
+        .panel-visual {
+            min-height: 230px;
+            background:
+                    linear-gradient(145deg, rgba(37, 99, 235, 0.84), rgba(15, 118, 110, 0.72)),
+                    url("https://images.unsplash.com/photo-1504813184591-01572f98c85f?auto=format&fit=crop&w=1200&q=80") center/cover;
+        }
+
+        .panel-body {
+            padding: 24px;
+        }
+
+        .panel-body h2 {
+            margin: 0 0 12px;
+            font-size: 24px;
+        }
+
+        .info-list {
+            display: grid;
+            gap: 12px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .info-list strong {
+            display: block;
+            color: var(--ink);
+            margin-bottom: 2px;
+        }
+
+        .section {
+            padding: 42px clamp(20px, 5vw, 72px);
+            background: white;
+        }
+
+        .section.alt {
+            background: var(--soft);
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+            font-size: clamp(26px, 3vw, 36px);
+        }
+
+        .section-heading p {
+            max-width: 560px;
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .specialties {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .specialty {
+            min-height: 138px;
+            padding: 20px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .specialty span {
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            color: white;
+            background: var(--accent);
+            font-weight: 800;
+        }
+
+        .specialty:nth-child(2n) span {
+            background: var(--primary);
+        }
+
+        .specialty:nth-child(3n) span {
+            background: var(--warm);
+        }
+
+        .specialty h3 {
+            margin: 0 0 8px;
+            font-size: 18px;
+        }
+
+        .specialty p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .doctors {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .doctor {
+            display: grid;
+            grid-template-columns: 72px 1fr;
+            gap: 16px;
+            align-items: center;
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .doctor-photo {
+            display: grid;
+            place-items: center;
+            width: 72px;
+            height: 72px;
+            border-radius: 8px;
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .doctor h3 {
+            margin: 0 0 5px;
+            font-size: 18px;
+        }
+
+        .doctor p {
+            margin: 0 0 8px;
+            color: var(--muted);
+        }
+
+        .doctor small {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .location {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            align-items: stretch;
+        }
+
+        .location-card,
+        .map-card {
+            padding: 24px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .location-card h2,
+        .map-card h2 {
+            margin: 0 0 14px;
+        }
+
+        .location-card p {
+            margin: 0 0 12px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .map-grid {
+            position: relative;
+            min-height: 210px;
+            overflow: hidden;
+            border-radius: 8px;
+            background:
+                    linear-gradient(90deg, transparent 48%, rgba(37, 99, 235, 0.22) 49%, rgba(37, 99, 235, 0.22) 51%, transparent 52%),
+                    linear-gradient(0deg, transparent 48%, rgba(15, 118, 110, 0.22) 49%, rgba(15, 118, 110, 0.22) 51%, transparent 52%),
+                    repeating-linear-gradient(90deg, #eef4fb 0 34px, #ffffff 34px 68px),
+                    repeating-linear-gradient(0deg, rgba(219, 228, 240, 0.65) 0 1px, transparent 1px 34px);
+        }
+
+        .map-pin {
+            position: absolute;
+            left: 50%;
+            top: 48%;
+            transform: translate(-50%, -50%);
+            display: grid;
+            place-items: center;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            color: white;
+            background: var(--primary);
+            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.35);
+            font-weight: 900;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 24px clamp(20px, 5vw, 72px);
+            color: var(--muted);
+            background: #172033;
+        }
+
+        .footer strong {
+            color: white;
+        }
+
+        @media (max-width: 900px) {
+            .hero,
+            .location {
+                grid-template-columns: 1fr;
+            }
+
+            .specialties,
+            .doctors {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .section-heading {
+                align-items: start;
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 620px) {
+            .navbar,
+            .footer {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .nav-actions,
+            .hero-actions {
+                flex-direction: column;
+            }
+
+            .specialties,
+            .doctors {
+                grid-template-columns: 1fr;
+            }
+
+            .doctor {
+                grid-template-columns: 64px 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <a class="brand" th:href="@{/}">
+        <span class="brand-mark">M</span>
+        <span>MediBook</span>
+    </a>
+    <div class="nav-actions">
+        <a class="btn btn-secondary" th:href="@{/authPatient/login}">Se connecter</a>
+        <a class="btn btn-primary" th:href="@{/authPatient/register}">Creer un compte</a>
+    </div>
+</nav>
+
+<main>
+    <section class="hero">
+        <div>
+            <h1>Une clinique moderne pour prendre soin de votre sante.</h1>
+            <p>
+                MediBook accompagne les patients avec une equipe medicale pluridisciplinaire,
+                des rendez-vous simples a organiser et un accueil clair au coeur du centre-ville.
+            </p>
+            <div class="hero-actions">
+                <a class="btn btn-primary" th:href="@{/authPatient/register}">Creer un compte</a>
+                <a class="btn btn-secondary" th:href="@{/authPatient/login}">Se connecter</a>
+            </div>
+        </div>
+
+        <aside class="clinic-panel">
+            <div class="panel-visual"></div>
+            <div class="panel-body">
+                <h2>Clinique MediBook</h2>
+                <ul class="info-list">
+                    <li>
+                        <strong>Adresse</strong>
+                        Rue A'Amel à carrefour de Madrid, Centre-ville
+                    </li>
+                    <li>
+                        <strong>Horaires</strong>
+                        Lundi - Samedi, 08:00 - 18:00
+                    </li>
+                    <li>
+                        <strong>Accueil</strong>
+                        Medecine generale, suivi patient et consultations specialisees.
+                    </li>
+                </ul>
+            </div>
+        </aside>
+    </section>
+
+    <section class="section">
+        <div class="section-heading">
+            <h2>Specialites disponibles</h2>
+            <p>Des services essentiels pour orienter chaque patient vers le bon praticien.</p>
+        </div>
+        <div class="specialties">
+            <article class="specialty">
+                <span>MG</span>
+                <h3>Medecine generale</h3>
+                <p>Consultations, suivi de sante et orientation medicale.</p>
+            </article>
+            <article class="specialty">
+                <span>CD</span>
+                <h3>Cardiologie</h3>
+                <p>Suivi du coeur, tension arterielle et prevention cardiovasculaire.</p>
+            </article>
+            <article class="specialty">
+                <span>PD</span>
+                <h3>Pediatrie</h3>
+                <p>Prise en charge des enfants et accompagnement familial.</p>
+            </article>
+            <article class="specialty">
+                <span>DM</span>
+                <h3>Dermatologie</h3>
+                <p>Diagnostic et traitement des problemes de peau.</p>
+            </article>
+            <article class="specialty">
+                <span>OR</span>
+                <h3>Orthopedie</h3>
+                <p>Douleurs articulaires, traumatologie et mobilite.</p>
+            </article>
+            <article class="specialty">
+                <span>GY</span>
+                <h3>Gynecologie</h3>
+                <p>Suivi, prevention et consultations de sante feminine.</p>
+            </article>
+            <article class="specialty">
+                <span>OP</span>
+                <h3>Ophtalmologie</h3>
+                <p>Controle de la vision et soins oculaires courants.</p>
+            </article>
+            <article class="specialty">
+                <span>DN</span>
+                <h3>Dentisterie</h3>
+                <p>Soins dentaires, prevention et consultations de controle.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="section alt">
+        <div class="section-heading">
+            <h2>Medecins et specialistes</h2>
+            <p>Une equipe disponible pour des consultations organisees et un suivi regulier.</p>
+        </div>
+        <div class="doctors">
+            <article class="doctor">
+                <div class="doctor-photo">SB</div>
+                <div>
+                    <h3>Dr Sara Benali</h3>
+                    <p>Medecin generaliste</p>
+                    <small>Suivi patient et prevention</small>
+                </div>
+            </article>
+            <article class="doctor">
+                <div class="doctor-photo">YK</div>
+                <div>
+                    <h3>Dr Youssef Karim</h3>
+                    <p>Cardiologue</p>
+                    <small>Consultations cardiovasculaires</small>
+                </div>
+            </article>
+            <article class="doctor">
+                <div class="doctor-photo">LM</div>
+                <div>
+                    <h3>Dr Lina Mansouri</h3>
+                    <p>Pediatre</p>
+                    <small>Sante de l'enfant</small>
+                </div>
+            </article>
+            <article class="doctor">
+                <div class="doctor-photo">NA</div>
+                <div>
+                    <h3>Dr Nadia Amrani</h3>
+                    <p>Dermatologue</p>
+                    <small>Peau et allergies</small>
+                </div>
+            </article>
+            <article class="doctor">
+                <div class="doctor-photo">HR</div>
+                <div>
+                    <h3>Dr Hamza Rami</h3>
+                    <p>Orthopediste</p>
+                    <small>Mobilite et articulations</small>
+                </div>
+            </article>
+            <article class="doctor">
+                <div class="doctor-photo">IK</div>
+                <div>
+                    <h3>Dr Imane Khaldi</h3>
+                    <p>Gynecologue</p>
+                    <small>Suivi et prevention</small>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="location">
+            <div class="location-card">
+                <h2>Notre localisation</h2>
+                <p>
+                    La clinique MediBook se trouve au Rue A'Amel à carrefour de Madrid , Centre-ville,
+                    proche des transports et facilement accessible aux patients.
+                </p>
+                <p>
+                    L'accueil est ouvert du lundi au samedi pour les consultations programmees
+                    et l'orientation vers les specialistes.
+                </p>
+            </div>
+            <div class="map-card">
+                <h2>Acces rapide</h2>
+                <div class="map-grid" aria-label="Carte simplifiee de localisation">
+                    <div class="map-pin">M</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <strong>MediBook</strong>
+    <span>Rue A'Amel à carrefour de Madrid, Centre-ville</span>
+</footer>
+</body>
+</html>

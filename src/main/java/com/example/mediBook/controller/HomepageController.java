@@ -1,16 +1,16 @@
 package com.example.mediBook.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller
-@RequestMapping("/dashboardPatient")
-public class DashBoardPatientController {
+@RequestMapping("/")
+public class HomepageController {
     @GetMapping("/")
-    public String dashboard(Model model) {
-        return "patient/dashboardPatient";
+    public String home() {
+        return "home";
     }
+
 }
