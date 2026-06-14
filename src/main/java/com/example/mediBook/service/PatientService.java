@@ -6,6 +6,7 @@ import com.example.mediBook.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PatientService {
@@ -22,6 +23,11 @@ public class PatientService {
         User savedUser = userService.inscrire(user);
         patient.setUser(savedUser);
         return patientRepository.save(patient);
+    }
+
+    // Trouver par id
+    public Optional<Patient> trouverParId(Long id) {
+        return patientRepository.findById(id);
     }
 
     // Liste de tous les patients

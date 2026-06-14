@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - MediBook</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+
+        .header {
+            background: #e53935;
+            color: white;
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logout-btn {
+            background: white;
+            color: #e53935;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .logout-btn:hover { background: #fce4e4; }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 60px;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px 30px;
+            width: 200px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .card .icon { font-size: 50px; margin-bottom: 15px; }
+        .card .label { font-size: 18px; font-weight: bold; color: #e53935; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <span>🏥 Admin - MediBook</span>
+    <!-- ✅ Bouton déconnexion -->
+    <form action="/admin/logout" method="post">
+        <button type="submit" class="logout-btn">🚪 Déconnexion</button>
+    </form>
+</div>
+
+<div class="container">
+
+    <a href="/admin/dashboard" class="card">
+        <div class="icon">📊</div>
+        <div class="label">Dashboard</div>
+    </a>
+
+    <a href="/admin/medecins" class="card">
+        <div class="icon">👨‍⚕️</div>
+        <div class="label">Médecins</div>
+    </a>
+
+    <a href="/admin/patients" class="card">
+        <div class="icon">🧑‍🤝‍🧑</div>
+        <div class="label">Patients</div>
+    </a>
+
+    <a href="/admin/specialites" class="card">
+        <div class="icon">🩺</div>
+        <div class="label">Spécialités</div>
+    </a>
+
+    <a href="/admin/rdv" class="card">
+        <div class="icon">📅</div>
+        <div class="label">Rendez-vous</div>
+    </a>
+
+</div>
+
+</body>
+</html>

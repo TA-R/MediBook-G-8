@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>RDV - Admin MediBook</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; }
+        .navbar {
+            background-color: #dc3545;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            background-color: #c82333;
+            border-radius: 5px;
+        }
+        .container { padding: 30px; }
+        table {
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            border-collapse: collapse;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        th {
+            background-color: #dc3545;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        td { padding: 12px 15px; border-bottom: 1px solid #eee; }
+        .en-attente { color: orange; font-weight: bold; }
+        .confirme { color: green; font-weight: bold; }
+        .annule { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <h1>📅 Gestion des Rendez-vous</h1>
+    <a th:href="@{/admin/dashboard}">Retour</a>
+</div>
+<div class="container">
+    <table>
+        <thead>
+        <tr>
+            <th>Patient</th>
+            <th>Médecin</th>
+            <th>Date</th>
+            <th>Heure</th>
+            <th>Statut</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="rdv : ${rdvs}">
+            <td th:text="${rdv.patient.nom + ' ' + rdv.patient.prenom}"></td>
+            <td th:text="${rdv.medecin.nom + ' ' + rdv.medecin.prenom}"></td>
+            <td th:text="${rdv.date}"></td>
+            <td th:text="${rdv.heure}"></td>
+            <td>
+                        <span th:text="${rdv.statut}"
+                              th:class="${rdv.statut == 'EN_ATTENTE' ? 'en-attente' :
+                                        rdv.statut == 'CONFIRME' ? 'confirme' :
+                                        'annule'}"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Spécialités - Admin MediBook</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; }
+        .navbar {
+            background-color: #dc3545;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            background-color: #c82333;
+            border-radius: 5px;
+        }
+        .container { padding: 30px; }
+        .form-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        input {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 250px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            border-collapse: collapse;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        th {
+            background-color: #dc3545;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        td { padding: 12px 15px; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <h1>🏥 Gestion des Spécialités</h1>
+    <a th:href="@{/admin/dashboard}">Retour</a>
+</div>
+<div class="container">
+    <div class="form-card">
+        <h3 style="margin-bottom:15px">Ajouter une spécialité</h3>
+        <form th:action="@{/admin/specialites/ajouter}" method="post">
+            <input type="text" name="nom" placeholder="Nom de la spécialité" required/>
+            <button type="submit" class="btn">Ajouter</button>
+        </form>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="s : ${specialites}">
+            <td th:text="${s.id}"></td>
+            <td th:text="${s.nom}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

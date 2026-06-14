@@ -1,13 +1,13 @@
 package com.example.mediBook.models;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "medecins")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Medecin {
 
     @Id
@@ -16,7 +16,10 @@ public class Medecin {
 
     private String nom;
     private String prenom;
-    private String specialite; // التخصص (للإستخدام في خاصية البحث)
+    private String telephone;
+    @ManyToOne
+    @JoinColumn(name = "specialite_id")
+    private Specialite specialite;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
