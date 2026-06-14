@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscription Patient - MediBook</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+        h2 {
+            text-align: center;
+            color: #2c7be5;
+            margin-bottom: 30px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #2c7be5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #1a68d1;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .login-link a {
+            color: #2c7be5;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>🏥 MediBook</h2>
+    <h3 style="text-align:center">Inscription Patient</h3>
+
+    <!-- Message erreur -->
+    <p th:if="${erreur}" th:text="${erreur}" class="error"></p>
+
+    <form th:action="@{/authPatient/register}" method="post">
+
+        <input type="text"
+               name="nom"
+               placeholder="Nom"
+               required/>
+
+        <input type="text"
+               name="prenom"
+               placeholder="Prénom"
+               required/>
+
+        <input type="text"
+               name="telephone"
+               placeholder="Numéro de téléphone"
+               required/>
+
+        <input type="date"
+               name="dateNaissance"
+               placeholder="Date de naissance"
+               required/>
+
+        <input type="password"
+               name="password"
+               placeholder="Mot de passe"
+               required/>
+
+        <button type="submit">S'inscrire</button>
+    </form>
+
+    <div class="login-link">
+        <p>Déjà inscrit ?
+            <a th:href="@{/authPatient/login}">Se connecter</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>

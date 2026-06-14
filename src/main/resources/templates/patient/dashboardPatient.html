@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+</html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Espace Patient - MediBook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+        }
+        .navbar {
+            background-color: #2c7be5;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        .navbar h1 {
+            font-size: 24px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            background-color: #1a68d1;
+            border-radius: 5px;
+        }
+        .container {
+            padding: 30px;
+        }
+        .welcome {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 250px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card .icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+        .card h3 {
+            color: #2c7be5;
+            margin-bottom: 10px;
+        }
+        .card p {
+            color: #666;
+            font-size: 14px;
+        }
+        .card a {
+            display: block;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #2c7be5;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <h1>🏥 MediBook</h1>
+    <a th:href="@{/authPatient/login}">Se déconnecter</a>
+</div>
+
+<!-- Contenu -->
+<div class="container">
+
+    <div class="welcome">
+        <h2>Bienvenue dans votre espace patient 👋</h2>
+        <p>Que souhaitez-vous faire aujourd'hui ?</p>
+    </div>
+
+    <div class="cards">
+
+        <!-- Chercher un médecin -->
+        <div class="card">
+            <div class="icon">🔍</div>
+            <h3>Chercher un médecin</h3>
+            <p>Trouvez un médecin par spécialité ou disponibilité</p>
+            <a th:href="@{/dashboardPatient/medecins}">Rechercher</a>
+        </div>
+
+        <!-- Mes rendez-vous -->
+        <div class="card">
+            <div class="icon">📅</div>
+            <h3>Mes rendez-vous</h3>
+            <p>Consultez et gérez vos rendez-vous</p>
+            <a th:href="@{/dashboardPatient/rdv}">Voir mes RDV</a>
+        </div>
+
+        <!-- Mon profil -->
+        <div class="card">
+            <div class="icon">👤</div>
+            <h3>Mon profil</h3>
+            <p>Consultez et modifiez vos informations</p>
+            <a th:href="@{/dashboardPatient/profil}">Mon profil</a>
+        </div>
+
+    </div>
+</div>
+
+</body>
+
+</html>
