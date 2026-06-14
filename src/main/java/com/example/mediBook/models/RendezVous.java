@@ -10,6 +10,9 @@ import java.time.LocalTime;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 public class RendezVous {
+    public enum Statut {
+        EN_ATTENTE, CONFIRME, ANNULE
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,9 +23,11 @@ public class RendezVous {
 
     @Column(nullable = false)
     private LocalTime heure; // وقت الموعد (HH:MM)
-
-    private String statut; // حالة الموعد: CONFIRME, ANNULE, EN_ATTENTE
-
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Statut statut = Statut.EN_ATTENTE;
+     // حالة الموعد: CONFIRME, ANNULE, EN_ATTENTE
+     private String motif;
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient; // المريض الذي حجز الموعد

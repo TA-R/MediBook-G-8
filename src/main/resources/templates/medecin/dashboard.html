@@ -41,6 +41,7 @@
         }
         .card .icon { font-size: 50px; margin-bottom: 15px; }
         .card h3 { color: #28a745; margin-bottom: 10px; }
+        .card p { color: #666; font-size: 14px; }
         .card a {
             display: block;
             margin-top: 15px;
@@ -50,30 +51,40 @@
             text-decoration: none;
             border-radius: 5px;
         }
+        .card a:hover { background-color: #1e7e34; }
     </style>
 </head>
 <body>
 <div class="navbar">
-    <h1>🏥 MediBook - Espace Médecin</h1>
-    <a th:href="@{/}">Se déconnecter</a>
+    <h1>&#127973; MediBook - Espace Médecin</h1>
+    <!-- CORRECTION : déconnexion vers logout, pas vers / -->
+    <a th:href="@{/authPatient/logout}">Se déconnecter</a>
 </div>
 <div class="container">
     <div class="welcome">
-        <h2>Bienvenue Docteur 👨‍⚕️</h2>
+        <!-- CORRECTION : affichage du nom du médecin connecté -->
+        <h2>Bienvenue Docteur
+            <span th:if="${medecin != null}"
+                  th:text="${medecin.prenom + ' ' + medecin.nom}"></span>
+            &#128104;&#8205;&#9877;&#65039;
+        </h2>
         <p>Gérez vos rendez-vous et votre agenda</p>
     </div>
     <div class="cards">
         <div class="card">
-            <div class="icon">📅</div>
+            <div class="icon">&#128197;</div>
             <h3>Mes Rendez-vous</h3>
             <p>Consultez vos rendez-vous du jour</p>
-            <a th:href="@{/medecin/rdv/1}">Voir mes RDV</a>
+            <!-- CORRECTION : /medecin/rdv/1 → /dashboardMedecin/rdv -->
+            <!-- L'ID fixe "/1" était faux — le médecin est identifié par sa session -->
+            <a th:href="@{/dashboardMedecin/rdv}">Voir mes RDV</a>
         </div>
         <div class="card">
-            <div class="icon">👥</div>
+            <div class="icon">&#128101;</div>
             <h3>Mes Patients</h3>
             <p>Liste de vos patients</p>
-            <a th:href="@{/medecin/dashboard}">Voir patients</a>
+            <!-- CORRECTION : /medecin/dashboard → /dashboardMedecin/rdv -->
+            <a th:href="@{/dashboardMedecin/rdv}">Voir patients</a>
         </div>
     </div>
 </div>

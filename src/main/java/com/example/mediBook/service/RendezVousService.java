@@ -3,76 +3,81 @@ package com.example.mediBook.service;
 import com.example.mediBook.models.Medecin;
 import com.example.mediBook.models.Patient;
 import com.example.mediBook.models.RendezVous;
+import com.example.mediBook.models.RendezVous.Statut;
+import com.example.mediBook.repository.MedecinRepository;
+import com.example.mediBook.repository.PatientRepository;
 import com.example.mediBook.repository.RendezVousRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RendezVousService {
 
-    @Autowired
-    private RendezVousRepository rendezVousRepository;
+    private final RendezVousRepository rendezVousRepository;
+    private final PatientRepository patientRepository;
+    private final MedecinRepository medecinRepository;
 
-    // Prendre un RDV
-    public RendezVous prendreRdv(Patient patient,
-                                 Medecin medecin,
-                                 LocalDate date,
-                                 LocalTime heure) {
+    public RendezVousService(RendezVousRepository rendezVousRepository,
+                             PatientRepository patientRepository,
+                             MedecinRepository medecinRepository) {
+        this.rendezVousRepository = rendezVousRepository;
+        this.patientRepository = patientRepository;
+        this.medecinRepository = medecinRepository;
+    }
 
-        // Vérifier si le créneau est libre
-        if (creneauOccupe(medecin, date, heure)) {
-            throw new RuntimeException("Ce créneau est déjà occupé !");
+    public RendezVous prendreRdv(Long patientId, Long medecinId,
+                                 LocalDate date, LocalTime heure, String motif) {
+        if (rendezVousRepository.existsConflict(medecinId, date, heure)) {
+            throw new IllegalStateException(
+                    "Ce créneau est déjà pris. Veuillez choisir une autre heure.");
         }
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new IllegalArgumentException("Patient introuvable"));
+        Medecin medecin = medecinRepository.findById(medecinId)
+                .orElseThrow(() -> new IllegalArgumentException("Médecin introuvable"));
 
         RendezVous rdv = new RendezVous();
         rdv.setPatient(patient);
         rdv.setMedecin(medecin);
         rdv.setDate(date);
         rdv.setHeure(heure);
-        rdv.setStatut("EN_ATTENTE");
-
+        rdv.setMotif(motif);
+        rdv.setStatut(Statut.EN_ATTENTE);
         return rendezVousRepository.save(rdv);
     }
 
-    // Vérifier si créneau occupé
-    public boolean creneauOccupe(Medecin medecin, LocalDate date, LocalTime heure) {
-        return rendezVousRepository
-                .existsByMedecinAndDateAndHeure(medecin, date, heure);
+    public RendezVous confirmerRdv(Long rdvId) {
+        RendezVous rdv = rendezVousRepository.findById(rdvId)
+                .orElseThrow(() -> new IllegalArgumentException("RDV introuvable"));
+        rdv.setStatut(Statut.CONFIRME);
+        return rendezVousRepository.save(rdv);
     }
 
-    // RDV d'un patient
-    public List<RendezVous> rdvPatient(Patient patient) {
-        return rendezVousRepository.findByPatient(patient);
+    public RendezVous annulerRdv(Long rdvId) {
+        RendezVous rdv = rendezVousRepository.findById(rdvId)
+                .orElseThrow(() -> new IllegalArgumentException("RDV introuvable"));
+        rdv.setStatut(Statut.ANNULE);
+        return rendezVousRepository.save(rdv);
     }
 
-    // RDV d'un médecin
+    public List<RendezVous> rdvDuPatient(Long patientId) {
+        return rendezVousRepository.findByPatient_Id(patientId);
+    }
+
+    // CORRECTION : MedecinController appelle rdvMedecin(medecin) avec un objet Medecin.
+    // Cette méthode manquait → "Cannot resolve method 'rdvMedecin'"
     public List<RendezVous> rdvMedecin(Medecin medecin) {
-        return rendezVousRepository.findByMedecin(medecin);
+        return rendezVousRepository.findByMedecin_Id(medecin.getId());
     }
 
-    // Annuler un RDV
-    public void annulerRdv(Long rdvId) {
-        Optional<RendezVous> rdv = rendezVousRepository.findById(rdvId);
-        rdv.ifPresent(r -> {
-            r.setStatut("ANNULE");
-            rendezVousRepository.save(r);
-        });
+    public List<RendezVous> agendaSemaine(Long medecinId, LocalDate debut) {
+        LocalDate fin = debut.plusDays(6);
+        return rendezVousRepository.findByMedecin_IdAndDateBetween(medecinId, debut, fin);
     }
 
-    // Confirmer un RDV
-    public void confirmerRdv(Long rdvId) {
-        Optional<RendezVous> rdv = rendezVousRepository.findById(rdvId);
-        rdv.ifPresent(r -> {
-            r.setStatut("CONFIRME");
-            rendezVousRepository.save(r);
-        });
-    }
-
-    // Tous les RDV
     public List<RendezVous> tousLesRdv() {
         return rendezVousRepository.findAll();
     }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Mon Profil - MediBook</title>
@@ -11,8 +11,10 @@
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             color: white;
         }
+        .navbar h1 { font-size: 22px; }
         .navbar a {
             color: white;
             text-decoration: none;
@@ -20,48 +22,86 @@
             background-color: #1a68d1;
             border-radius: 5px;
         }
-        .container { padding: 30px; }
-        .profil-card {
+        .container { padding: 30px; max-width: 600px; margin: 0 auto; }
+        .back { display: inline-block; margin-bottom: 20px; color: #2c7be5; text-decoration: none; }
+        .card {
             background: white;
-            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        .profil-card .icon {
-            font-size: 80px;
-            text-align: center;
-            margin-bottom: 20px;
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2c7be5, #0f766e);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0 auto 20px;
         }
+        h2 { text-align: center; color: #172033; margin-bottom: 24px; }
         .info-row {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
+            padding: 14px 0;
             border-bottom: 1px solid #eee;
         }
-        .info-row label { color: #666; }
-        .info-row span { font-weight: bold; }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { color: #64748b; font-size: 14px; }
+        .info-value { color: #172033; font-weight: bold; }
+        .btn-retour {
+            display: block;
+            margin-top: 24px;
+            padding: 12px;
+            text-align: center;
+            background-color: #2c7be5;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+        .btn-retour:hover { background-color: #1a68d1; }
     </style>
 </head>
 <body>
 <div class="navbar">
-    <h1>👤 Mon Profil</h1>
-    <a th:href="@{/dashboardPatient/}">Retour</a>
+    <h1>&#127973; MediBook</h1>
+    <a th:href="@{/authPatient/logout}">Se déconnecter</a>
 </div>
+
 <div class="container">
-    <div class="profil-card">
-        <div class="icon">👤</div>
-        <h2 style="text-align:center; margin-bottom:20px">
-            Mon profil patient
-        </h2>
+    <a class="back" th:href="@{/dashboardPatient/}">&#8592; Retour</a>
+
+    <div class="card">
+        <div class="avatar"
+             th:text="${patient != null ?
+                #strings.substring(patient.prenom,0,1) + #strings.substring(patient.nom,0,1)
+                : '?'}">
+        </div>
+
+        <h2 th:text="${patient != null ? patient.prenom + ' ' + patient.nom : 'Mon Profil'}"></h2>
+
         <div class="info-row">
-            <label>Nom :</label>
-            <span th:text="${patient != null ? patient.nom : 'Non défini'}"></span>
+            <span class="info-label">Nom</span>
+            <span class="info-value" th:text="${patient?.nom ?: '-'}"></span>
         </div>
         <div class="info-row">
-            <label>Prénom :</label>
-            <span th:text="${patient != null ? patient.prenom : 'Non défini'}"></span>
+            <span class="info-label">Prénom</span>
+            <span class="info-value" th:text="${patient?.prenom ?: '-'}"></span>
         </div>
+        <div class="info-row">
+            <span class="info-label">Date de naissance</span>
+            <span class="info-value" th:text="${patient?.dateNaissance ?: '-'}"></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Téléphone</span>
+            <span class="info-value" th:text="${patient?.user?.telephone ?: '-'}"></span>
+        </div>
+
+        <a class="btn-retour" th:href="@{/dashboardPatient/}">Retour au tableau de bord</a>
     </div>
 </div>
 </body>

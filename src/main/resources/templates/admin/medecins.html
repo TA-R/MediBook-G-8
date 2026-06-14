@@ -28,6 +28,13 @@
             margin-bottom: 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+        .error {
+            color: red;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #ffe0e0;
+            border-radius: 5px;
+        }
         input, select {
             padding: 10px;
             margin: 5px;
@@ -69,10 +76,14 @@
 </head>
 <body>
 <div class="navbar">
-    <h1>👨‍⚕️ Gestion des Médecins</h1>
+    <h1>&#128104;&#8205;&#9877;&#65039; Gestion des Médecins</h1>
     <a th:href="@{/admin/dashboard}">Retour</a>
 </div>
 <div class="container">
+
+    <!-- Message erreur -->
+    <p th:if="${erreur}" class="error" th:text="${erreur}"></p>
+
     <!-- Formulaire ajouter -->
     <div class="form-card">
         <h3 style="margin-bottom:15px">Ajouter un médecin</h3>
@@ -80,6 +91,8 @@
             <input type="text" name="nom" placeholder="Nom" required/>
             <input type="text" name="prenom" placeholder="Prénom" required/>
             <input type="text" name="telephone" placeholder="Téléphone" required/>
+            <!-- AJOUT : champ mot de passe séparé du téléphone -->
+            <input type="password" name="password" placeholder="Mot de passe" required/>
             <select name="specialiteId">
                 <option th:each="s : ${specialites}"
                         th:value="${s.id}"
@@ -95,6 +108,7 @@
         <tr>
             <th>Nom</th>
             <th>Prénom</th>
+            <th>Téléphone</th>
             <th>Spécialité</th>
             <th>Actions</th>
         </tr>
@@ -103,10 +117,12 @@
         <tr th:each="m : ${medecins}">
             <td th:text="${m.nom}"></td>
             <td th:text="${m.prenom}"></td>
+            <!-- AJOUT : affichage du téléphone pour que l'admin sache le login -->
+            <td th:text="${m.user != null ? m.user.telephone : '-'}"></td>
             <td th:text="${m.specialite != null ? m.specialite.nom : 'Non définie'}"></td>
             <td>
                 <form th:action="@{/admin/medecins/supprimer/{id}(id=${m.id})}" method="post">
-                    <button class="btn-supprimer">🗑️ Supprimer</button>
+                    <button class="btn-supprimer">&#128465;&#65039; Supprimer</button>
                 </form>
             </td>
         </tr>

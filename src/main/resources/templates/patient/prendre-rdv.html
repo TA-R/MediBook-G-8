@@ -37,12 +37,20 @@
         }
         .medecin-info .icon { font-size: 50px; }
         .medecin-info h3 { color: #2c7be5; margin-top: 10px; }
+        label { display: block; margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #333; }
         input {
             width: 100%;
             padding: 12px;
-            margin: 8px 0;
+            margin: 4px 0;
             border: 1px solid #ddd;
             border-radius: 5px;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
         }
         .btn {
             width: 100%;
@@ -53,36 +61,54 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            margin-top: 10px;
+            margin-top: 16px;
         }
-        .error { color: red; text-align: center; margin-bottom: 10px; }
+        .btn:hover { background-color: #1a68d1; }
+        .error {
+            color: red;
+            text-align: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #ffe0e0;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
 <div class="navbar">
-    <h1>📅 Prendre un RDV</h1>
+    <h1>&#128197; Prendre un RDV</h1>
     <a th:href="@{/dashboardPatient/medecins}">Retour</a>
 </div>
 <div class="container">
     <div class="form-card">
 
-        <!-- Info médecin -->
         <div class="medecin-info">
-            <div class="icon">👨‍⚕️</div>
+            <div class="icon">&#128104;&#8205;&#9877;&#65039;</div>
             <h3 th:text="${'Dr. ' + medecin.nom + ' ' + medecin.prenom}"></h3>
             <p th:text="${medecin.specialite != null ? medecin.specialite.nom : 'Généraliste'}"></p>
         </div>
 
-        <!-- Erreur -->
         <p th:if="${erreur}" th:text="${erreur}" class="error"></p>
 
-        <form th:action="@{/dashboardPatient/rdv/{id}(id=${medecin.id})}" method="post">
-            <input type="hidden" name="patientId" value="1"/>
+        <!-- CORRECTION 1 : action était /dashboardPatient/rdv/{id} → 404
+             La bonne route est /dashboardPatient/rdv/nouveau -->
+        <!-- CORRECTION 2 : patientId était hardcodé à 1
+             Le controller identifie le patient via la session Spring Security
+             donc on n'envoie que medecinId -->
+        <form th:action="@{/dashboardPatient/rdv/nouveau}" method="post">
+            <input type="hidden" name="medecinId" th:value="${medecin.id}"/>
+
             <label>Date du rendez-vous :</label>
-            <input type="date" name="date" required/>
+            <input type="date" name="date" required
+                   th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"/>
+
             <label>Heure du rendez-vous :</label>
-            <input type="time" name="heure" required/>
-            <button type="submit" class="btn">✅ Confirmer le RDV</button>
+            <input type="time" name="heure" required min="08:00" max="18:00"/>
+
+            <label>Motif de la consultation :</label>
+            <textarea name="motif" rows="3" placeholder="Décrivez brièvement le motif..."></textarea>
+
+            <button type="submit" class="btn">&#9989; Confirmer le RDV</button>
         </form>
     </div>
 </div>

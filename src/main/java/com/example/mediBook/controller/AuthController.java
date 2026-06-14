@@ -4,46 +4,62 @@ import com.example.mediBook.models.Patient;
 import com.example.mediBook.models.User;
 import com.example.mediBook.service.PatientService;
 import com.example.mediBook.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @Controller
 @RequestMapping("/authPatient")
 public class AuthController {
 
-    @Autowired
-    private PatientService patientService;
+    private final PatientService patientService;
+    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private UserService userService;
+    public AuthController(PatientService patientService,
+                          UserService userService,
+                          AuthenticationManager authenticationManager) {
+        this.patientService = patientService;
+        this.userService = userService;
+        this.authenticationManager = authenticationManager;
+    }
 
     @GetMapping("/register")
     public String showRegister() {
         return "patient/register";
     }
+
     @PostMapping("/register")
     public String register(@RequestParam String nom,
                            @RequestParam String prenom,
                            @RequestParam String telephone,
+                           @RequestParam String dateNaissance,
                            @RequestParam String password,
                            Model model) {
         if (userService.telephoneExiste(telephone)) {
-            model.addAttribute("erreur", "Ce téléphone est déjà utilisé ! Veuillez vous connecter.");
+            model.addAttribute("erreur", "Ce téléphone est déjà utilisé !");
             return "patient/register";
         }
+
         User user = new User();
         user.setTelephone(telephone);
         user.setPassword(password);
-        user.setRole("PATIENT");
+        user.setRole(User.Role.PATIENT);
 
         Patient patient = new Patient();
         patient.setNom(nom);
         patient.setPrenom(prenom);
+        patient.setDateNaissance(LocalDate.parse(dateNaissance));
 
         patientService.inscrirePatient(patient, user);
         return "redirect:/authPatient/login";
@@ -53,17 +69,47 @@ public class AuthController {
     public String showLogin() {
         return "patient/login";
     }
+
     @PostMapping("/login")
     public String login(@RequestParam String telephone,
                         @RequestParam String password,
+                        HttpServletRequest request,
+                        HttpServletResponse response,
                         Model model) {
-        var user = userService.connecterParTelephone(telephone, password);
-        if (user.isPresent()) {
-            return "redirect:/dashboardPatient/";
-        } else {
+        try {
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(telephone, password)
+            );
+            SecurityContextHolder.getContext().setAuthentication(auth);
+            new HttpSessionSecurityContextRepository()
+                    .saveContext(SecurityContextHolder.getContext(), request, response);
+
+            // CORRECTION : redirection selon le rôle de l'utilisateur connecté
+            // Avant : tout le monde était redirigé vers /dashboardPatient/
+            // même un ADMIN → 403 Forbidden
+            String role = auth.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .findFirst()
+                    .orElse("");
+
+            if (role.equals("ROLE_ADMIN")) {
+                return "redirect:/admin/";
+            } else if (role.equals("ROLE_MEDECIN")) {
+                return "redirect:/dashboardMedecin/";
+            } else {
+                return "redirect:/dashboardPatient/";
+            }
+
+        } catch (Exception e) {
             model.addAttribute("erreur", "Téléphone ou mot de passe incorrect !");
             return "patient/login";
         }
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        request.getSession().invalidate();
+        SecurityContextHolder.clearContext();
+        return "redirect:/";
+    }
 }

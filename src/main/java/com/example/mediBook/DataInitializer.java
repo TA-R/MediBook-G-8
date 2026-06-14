@@ -19,13 +19,17 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+
         if (userRepository.findByTelephone("admin").isEmpty()) {
             User admin = new User();
             admin.setTelephone("admin");
-            admin.setPassword(passwordEncoder.encode("admin123"));
-            admin.setRole("ADMIN");
+            admin.setPassword(passwordEncoder.encode("admin"));
+            // CORRECTION : setRole("ADMIN") → setRole(User.Role.ADMIN)
+            // "ADMIN" est un String mais role est un enum User.Role
+            // Java ne peut pas convertir automatiquement un String en enum
+            admin.setRole(User.Role.ADMIN);
             userRepository.save(admin);
-            System.out.println("✅ Admin créé !");
+            System.out.println("Admin créé !");
         }
     }
 }

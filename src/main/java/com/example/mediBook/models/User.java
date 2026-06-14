@@ -20,6 +20,11 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String role; // ADMIN, MEDECIN, PATIENT
+    private Role role;
+
+    public enum Role {
+        ADMIN, MEDECIN, PATIENT
+    }
 }

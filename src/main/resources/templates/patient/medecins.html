@@ -43,11 +43,7 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        .medecins-grid {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+        .medecins-grid { display: flex; gap: 20px; flex-wrap: wrap; }
         .medecin-card {
             background: white;
             padding: 20px;
@@ -68,16 +64,17 @@
             text-decoration: none;
             border-radius: 5px;
         }
+        .btn-rdv:hover { background-color: #1a68d1; }
+        .empty { text-align: center; padding: 40px; color: #666; }
     </style>
 </head>
 <body>
 <div class="navbar">
-    <h1>🔍 Chercher un médecin</h1>
+    <h1>&#128269; Chercher un médecin</h1>
     <a th:href="@{/dashboardPatient/}">Retour</a>
 </div>
 <div class="container">
 
-    <!-- Filtre par spécialité -->
     <div class="search-bar">
         <form th:action="@{/dashboardPatient/medecins}" method="get">
             <select name="specialiteId">
@@ -86,21 +83,28 @@
                         th:value="${s.id}"
                         th:text="${s.nom}"></option>
             </select>
-            <button type="submit" class="btn">🔍 Filtrer</button>
+            <button type="submit" class="btn">&#128269; Filtrer</button>
         </form>
     </div>
 
-    <!-- Liste des médecins -->
-    <div class="medecins-grid">
+    <div th:if="${medecins == null or medecins.isEmpty()}" class="empty">
+        <p>Aucun médecin trouvé.</p>
+    </div>
+
+    <div class="medecins-grid" th:if="${medecins != null and !medecins.isEmpty()}">
         <div th:each="m : ${medecins}" class="medecin-card">
-            <div class="icon">👨‍⚕️</div>
+            <div class="icon">&#128104;&#8205;&#9877;&#65039;</div>
             <h3 th:text="${'Dr. ' + m.nom + ' ' + m.prenom}"></h3>
             <p th:text="${m.specialite != null ? m.specialite.nom : 'Généraliste'}"></p>
-            <a th:href="@{/dashboardPatient/rdv/{id}(id=${m.id})}"
-               class="btn-rdv">📅 Prendre RDV</a>
+            <!-- CORRECTION : /dashboardPatient/rdv/{id} → /dashboardPatient/rdv/nouveau?medecinId=
+                 L'ancienne URL envoyait l'ID du médecin comme segment de chemin
+                 mais le controller attend un paramètre GET "medecinId" -->
+            <a th:href="@{/dashboardPatient/rdv/nouveau(medecinId=${m.id})}"
+               class="btn-rdv">&#128197; Prendre RDV</a>
         </div>
     </div>
 
 </div>
 </body>
 </html>
+ 

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -22,6 +24,8 @@
             border-radius: 5px;
         }
         .container { padding: 30px; }
+        .empty { text-align: center; padding: 40px; color: #666;
+                 background: white; border-radius: 10px; }
         table {
             width: 100%;
             background: white;
@@ -43,6 +47,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            margin-right: 5px;
         }
         .btn-annuler {
             padding: 6px 12px;
@@ -52,24 +57,31 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        .statut-en-attente { color: orange; font-weight: bold; }
-        .statut-confirme { color: green; font-weight: bold; }
-        .statut-annule { color: red; font-weight: bold; }
+        .EN_ATTENTE { color: orange; font-weight: bold; }
+        .CONFIRME   { color: green;  font-weight: bold; }
+        .ANNULE     { color: red;    font-weight: bold; }
     </style>
 </head>
 <body>
 <div class="navbar">
-    <h1>🏥 Mes Rendez-vous</h1>
-    <a th:href="@{/medecin/dashboard}">Retour</a>
+    <h1>&#127973; Mes Rendez-vous</h1>
+    <!-- CORRECTION : /medecin/dashboard → /dashboardMedecin/ -->
+    <a th:href="@{/dashboardMedecin/}">Retour</a>
 </div>
 <div class="container">
     <h2 style="margin-bottom:20px">Liste de mes rendez-vous</h2>
-    <table>
+
+    <div th:if="${rdvs == null or rdvs.isEmpty()}" class="empty">
+        <p>Vous n'avez aucun rendez-vous pour le moment.</p>
+    </div>
+
+    <table th:if="${rdvs != null and !rdvs.isEmpty()}">
         <thead>
         <tr>
             <th>Patient</th>
             <th>Date</th>
             <th>Heure</th>
+            <th>Motif</th>
             <th>Statut</th>
             <th>Actions</th>
         </tr>
@@ -79,19 +91,25 @@
             <td th:text="${rdv.patient.nom + ' ' + rdv.patient.prenom}"></td>
             <td th:text="${rdv.date}"></td>
             <td th:text="${rdv.heure}"></td>
+            <td th:text="${rdv.motif ?: '-'}"></td>
             <td>
-                        <span th:text="${rdv.statut}"
-                              th:class="${rdv.statut == 'EN_ATTENTE' ? 'statut-en-attente' :
-                                        rdv.statut == 'CONFIRME' ? 'statut-confirme' :
-                                        'statut-annule'}"></span>
+                <span th:text="${rdv.statut}"
+                      th:classappend="${rdv.statut.name()}"></span>
             </td>
             <td>
-                <form th:action="@{/medecin/rdv/confirmer/{id}(id=${rdv.id})}" method="post" style="display:inline">
-                    <button class="btn-confirmer">✅ Confirmer</button>
+                <!-- CORRECTION : /medecin/rdv/confirmer → /dashboardMedecin/rdv/confirmer -->
+                <form th:if="${rdv.statut.name() != 'CONFIRME' and rdv.statut.name() != 'ANNULE'}"
+                      th:action="@{/dashboardMedecin/rdv/confirmer/{id}(id=${rdv.id})}"
+                      method="post" style="display:inline">
+                    <button class="btn-confirmer">&#9989; Confirmer</button>
                 </form>
-                <form th:action="@{/medecin/rdv/annuler/{id}(id=${rdv.id})}" method="post" style="display:inline">
-                    <button class="btn-annuler">❌ Annuler</button>
+                <!-- CORRECTION : /medecin/rdv/annuler → /dashboardMedecin/rdv/annuler -->
+                <form th:if="${rdv.statut.name() != 'ANNULE'}"
+                      th:action="@{/dashboardMedecin/rdv/annuler/{id}(id=${rdv.id})}"
+                      method="post" style="display:inline">
+                    <button class="btn-annuler">&#10060; Annuler</button>
                 </form>
+                <span th:if="${rdv.statut.name() == 'ANNULE'}" style="color:#999;">—</span>
             </td>
         </tr>
         </tbody>

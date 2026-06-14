@@ -2,8 +2,8 @@ package com.example.mediBook.models;
 
 import jakarta.persistence.*;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
 
 import java.util.List;
 
@@ -11,6 +11,8 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "specialites")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Specialite {
 
     @Id
