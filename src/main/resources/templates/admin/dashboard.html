@@ -59,9 +59,7 @@
 <div class="navbar">
     <h1>🏥 MediBook - Administration</h1>
     <!-- ✅ CORRECT - formulaire POST -->
-    <form action="/admin/logout" method="post">
-        <button type="submit">Déconnexion</button>
-    </form>
+    <a th:href="@{/authPatient/login}">Se déconnecter</a>
 </div>
 <div class="container">
     <h2 style="margin-bottom:20px">Tableau de bord</h2>

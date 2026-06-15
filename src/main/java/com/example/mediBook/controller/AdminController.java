@@ -48,12 +48,9 @@ public class AdminController {
 
     @GetMapping("/")
     public String adminRoot() { return "redirect:/admin/dashboard"; }
-
     @GetMapping("")
     public String adminHome() { return "redirect:/admin/dashboard"; }
 
-    @GetMapping("/login")
-    public String adminLogin() { return "admin/login"; }
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {

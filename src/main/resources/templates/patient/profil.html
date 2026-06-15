@@ -69,11 +69,11 @@
 <body>
 <div class="navbar">
     <h1>&#127973; MediBook</h1>
-    <a th:href="@{/authPatient/logout}">Se déconnecter</a>
+    <a th:href="@{/dashboardPatient/}">Retour</a>
 </div>
 
 <div class="container">
-    <a class="back" th:href="@{/dashboardPatient/}">&#8592; Retour</a>
+
 
     <div class="card">
         <div class="avatar"
@@ -101,7 +101,7 @@
             <span class="info-value" th:text="${patient?.user?.telephone ?: '-'}"></span>
         </div>
 
-        <a class="btn-retour" th:href="@{/dashboardPatient/}">Retour au tableau de bord</a>
+       
     </div>
 </div>
 </body>

@@ -2,7 +2,6 @@ package com.example.mediBook.controller;
 
 import com.example.mediBook.models.Medecin;
 import com.example.mediBook.models.Patient;
-import com.example.mediBook.models.RendezVous;
 import com.example.mediBook.repository.MedecinRepository;
 import com.example.mediBook.repository.SpecialiteRepository;
 import com.example.mediBook.service.PatientService;

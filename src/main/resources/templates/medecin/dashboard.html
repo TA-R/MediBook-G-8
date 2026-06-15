@@ -58,7 +58,7 @@
 <div class="navbar">
     <h1>&#127973; MediBook - Espace Médecin</h1>
     <!-- CORRECTION : déconnexion vers logout, pas vers / -->
-    <a th:href="@{/authPatient/logout}">Se déconnecter</a>
+    <a th:href="@{/authPatient/login}">Se déconnecter</a>
 </div>
 <div class="container">
     <div class="welcome">
@@ -78,13 +78,6 @@
             <!-- CORRECTION : /medecin/rdv/1 → /dashboardMedecin/rdv -->
             <!-- L'ID fixe "/1" était faux — le médecin est identifié par sa session -->
             <a th:href="@{/dashboardMedecin/rdv}">Voir mes RDV</a>
-        </div>
-        <div class="card">
-            <div class="icon">&#128101;</div>
-            <h3>Mes Patients</h3>
-            <p>Liste de vos patients</p>
-            <!-- CORRECTION : /medecin/dashboard → /dashboardMedecin/rdv -->
-            <a th:href="@{/dashboardMedecin/rdv}">Voir patients</a>
         </div>
     </div>
 </div>

@@ -38,7 +38,6 @@ public class AuthController {
     public String showRegister() {
         return "patient/register";
     }
-
     @PostMapping("/register")
     public String register(@RequestParam String nom,
                            @RequestParam String prenom,
@@ -69,7 +68,6 @@ public class AuthController {
     public String showLogin() {
         return "patient/login";
     }
-
     @PostMapping("/login")
     public String login(@RequestParam String telephone,
                         @RequestParam String password,
